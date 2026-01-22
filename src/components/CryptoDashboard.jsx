@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import SearchBar from './SearchBar'
 import CryptoList from './CryptoList'
 import CryptoCharts from './CryptoCharts'
+import CoinModal from './CoinModal'
+import { AnimatePresence } from 'framer-motion'
 
 const CryptoDashboard = () => {
     const [coins, setCoins] = useState([])
@@ -9,6 +11,7 @@ const CryptoDashboard = () => {
     const [error, setError] = useState("")
     const [search, setSearch] = useState("")
     const [chartData, setChartData] = useState([])
+    const [selectedCoin, setSelectedCoin] = useState(null)
 
 
     useEffect(() => {
@@ -73,10 +76,16 @@ const CryptoDashboard = () => {
       {!loading && !error && (
        <>
        <CryptoCharts data={chartData}/>
-        <CryptoList coins={filteredCoins}/>
-        
+        <CryptoList coins={filteredCoins} onSelect={setSelectedCoin} />
+       
        </>
       )}
+
+      <AnimatePresence>
+        {selectedCoin && (
+          <CoinModal key={selectedCoin.id} coin={selectedCoin} onClose={() => setSelectedCoin(null)} />
+        )}
+      </AnimatePresence>
     </div>
   )
 }
