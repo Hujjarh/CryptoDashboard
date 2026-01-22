@@ -1,34 +1,36 @@
-import React, { useEffect } from 'react'
-import { motion as Motion } from 'framer-motion'
+import React, { useEffect, useState } from 'react'
 
 const CoinModal = ({ coin, onClose }) => {
+  const [visible, setVisible] = useState(false)
+  const handleClose = () => {
+    setVisible(false)
+    // wait for animation to finish then call onClose
+    setTimeout(() => onClose(), 200)
+  }
+
   useEffect(() => {
     if (!coin) return
 
+    setVisible(true)
+
     const handleKey = (e) => {
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') handleClose()
     }
 
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
-  }, [onClose, coin])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [coin])
 
   if (!coin) return null
 
   return (
-    <Motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={onClose}
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black ${visible ? 'bg-opacity-60' : 'bg-opacity-0'} transition-colors duration-200`}
+      onClick={handleClose}
     >
-      <Motion.div
-        className="w-full max-w-lg bg-gray-900 border border-gray-800 rounded-xl p-6 text-white mx-4"
-        initial={{ y: 20, opacity: 0, scale: 0.98 }}
-        animate={{ y: 0, opacity: 1, scale: 1 }}
-        exit={{ y: 20, opacity: 0, scale: 0.98 }}
-        transition={{ duration: 0.18 }}
+      <div
+        className={`w-full max-w-lg bg-gray-900 border border-gray-800 rounded-xl p-6 text-white mx-4 transform transition-all duration-200 ${visible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -45,7 +47,7 @@ const CoinModal = ({ coin, onClose }) => {
 
           <button
             className="text-gray-400 hover:text-white"
-            onClick={onClose}
+            onClick={handleClose}
             aria-label="Close"
           >
             ✕
@@ -82,8 +84,8 @@ const CoinModal = ({ coin, onClose }) => {
             <div dangerouslySetInnerHTML={{ __html: coin.description }} />
           </div>
         )}
-      </Motion.div>
-    </Motion.div>
+      </div>
+    </div>
   )
 }
 

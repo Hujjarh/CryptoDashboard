@@ -3,7 +3,6 @@ import SearchBar from './SearchBar'
 import CryptoList from './CryptoList'
 import CryptoCharts from './CryptoCharts'
 import CoinModal from './CoinModal'
-import { AnimatePresence } from 'framer-motion'
 
 const CryptoDashboard = () => {
     const [coins, setCoins] = useState([])
@@ -81,11 +80,9 @@ const CryptoDashboard = () => {
        </>
       )}
 
-      <AnimatePresence>
-        {selectedCoin && (
-          <CoinModal key={selectedCoin.id} coin={selectedCoin} onClose={() => setSelectedCoin(null)} />
-        )}
-      </AnimatePresence>
+      {selectedCoin && (
+        <CoinModal coin={selectedCoin} onClose={() => setSelectedCoin(null)} />
+      )}
     </div>
   )
 }
